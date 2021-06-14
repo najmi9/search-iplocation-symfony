@@ -21,5 +21,7 @@ services:
             - '../src/Kernel.php'
             - '../src/Tests/'
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    App\Infrastructure\Search\Typesense\TypesenseClient:
+      arguments:
+        $host: '%env(resolve:TYPESENSE_URL)%'
+        $apiKey: '%env(TYPESENSE_KEY)%'

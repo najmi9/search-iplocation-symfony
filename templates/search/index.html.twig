@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello SearchController!{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .search-item {
+            background: lightgray;
+            padding: 5px;
+            margin-bottom: 5px;
+            border-radius: 10px!important:
+        }
+
+        .search-item:hover{
+            transform: scale(1.0009);
+            transition: transform .5s;
+            cursor: pointer;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+    <div class="card">
+        <div class="card-header">
+            <div class="card-title">
+                <h3 class="card-label">
+                    Search:
+                </h3>
+            </div>
+            <form method="GET">
+                <div class="form-group">
+                    <input type="text" name="q" id="q" class="form-control" placeholder="Search Content ..." />
+                </div>
+                <div class="form-group mt-2">
+                    <button class="btn btn-sm btn-primary" type="submit">
+                        Search
+                    </button>
+                </div>
+            </form>
+        </div>
+        <div class="card-body">
+            <h2>{{ total }} Results.</h2>
+            {% for item in items %}
+                <div class="search-item" data-url="{{ item.url}}">
+                   <div>
+                         {{ item.name|raw }} 
+                        <span class="text-success fw-bolder"> 
+                            $ {{ item.price }}
+                        </span>
+                   </div>
+                    <div>
+                        {{ item.shortDescription|raw }} 
+                    </div>
+                    <div>
+                        <small>
+                            {{ item.description }}
+                        </small>
+                    </div>
+                </div>
+            {% else %}
+                Not Result found
+            {% endfor %}
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        document.querySelectorAll('.search-item').forEach(div => {
+            div.onclick = e => {
+                console.log('clicked');
+                window.location.href = div.dataset.url
+            }
+        })
+    </script>
+{% endblock %}
