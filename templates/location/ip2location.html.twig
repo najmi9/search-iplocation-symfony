@@ -1,0 +1,127 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<style>
+h3, p, form {
+    padding-left: 25px;
+}
+</style>
+
+<h3>IP2Location Symfony 4 Demo</h3>
+
+<p>This demo uses <a href="https://lite.ip2location.com/database/ip-country-region-city-latitude-longitude-zipcode-timezone" target="_blank">IP2Location DB11 LITE BIN Data</a> for geolocation lookup. You may download the BIN Data at <a href="https://lite.ip2location.com" target="_blank">https://lite.ip2location.com</a> (Free edition) or <a href="https://www.ip2location.com" target="_blank">https://www.ip2location.com</a> (Commercial edition)</p>
+
+{% if form is defined %}
+<form id="form" action="" method="POST">
+    <table>
+        <tr>
+            <td>IP Address: </td>
+            <td style="padding-left:10px">{{ form_widget(form.ip) }}</td>
+            <td style="padding-left:10px"><input class="btn btn-primary" type="submit" value="Submit" name="submit"/></td>
+        </tr>
+    </table>
+</form>
+{% endif %}
+<br/>
+
+{% if records is defined %}
+<div>
+    <table class="table table-bordered table-striped">
+        <tbody>
+            <tr>
+                <td>IP Number: </td>
+                <td>{{ records.ipNumber }}</td>
+            </tr>
+            <tr>
+                <td>IP Version: </td>
+                <td>{{ records.ipVersion }}</td>
+            </tr>
+            <tr>
+                <td>IP Address: </td>
+                <td>{{ records.ipAddress }}</td>
+            </tr>
+            <tr>
+                <td>Country Code: </td>
+                <td>{{ records.countryCode }}</td>
+            </tr>
+            <tr>
+                <td>Country Name: </td>
+                <td>{{ records.countryName }}</td>
+            </tr>
+            <tr>
+                <td>Region Name: </td>
+                <td>{{ records.regionName }}</td>
+            </tr>
+            <tr>
+                <td>City Name: </td>
+                <td>{{ records.cityName }}</td>
+            </tr>
+            <tr>
+                <td>Time Zone: </td>
+                <td>{{ records.timeZone }}</td>
+            </tr>
+            <tr>
+                <td>ZIP Code: </td>
+                <td>{{ records.zipCode }}</td>
+            </tr>
+            <tr>
+                <td>Latitude: </td>
+                <td>{{ records.latitude }}</td>
+            </tr>
+            <tr>
+                <td>Longitude: </td>
+                <td>{{ records.longitude }}</td>
+            </tr>
+            <tr>
+                <td>Area Code: </td>
+                <td>{{ records.areaCode }}</td>
+            </tr>
+            <tr>
+                <td>IDD Code: </td>
+                <td>{{ records.iddCode }}</td>
+            </tr>
+            <tr>
+                <td>Weather Station Code: </td>
+                <td>{{ records.weatherStationCode }}</td>
+            </tr>
+            <tr>
+                <td>Weather Station Name: </td>
+                <td>{{ records.weatherStationName }}</td>
+            </tr>
+            <tr>
+                <td>MCC: </td>
+                <td>{{ records.mcc }}</td>
+            </tr>
+            <tr>
+                <td>MNC: </td>
+                <td>{{ records.mnc }}</td>
+            </tr>
+            <tr>
+                <td>Mobile Carrier: </td>
+                <td>{{ records.mobileCarrierName }}</td>
+            </tr>
+            <tr>
+                <td>Usage Type: </td>
+                <td>{{ records.usageType }}</td>
+            </tr>
+            <tr>
+                <td>Elevation: </td>
+                <td>{{ records.elevation }}</td>
+            </tr>
+            <tr>
+                <td>Net Speed: </td>
+                <td>{{ records.netSpeed }}</td>
+            </tr>
+            <tr>
+                <td>Domain Name: </td>
+                <td>{{ records.domainName }}</td>
+            </tr>
+            <tr>
+                <td>ISP Name: </td>
+                <td>{{ records.isp }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+{% endif %}
+{% endblock %}

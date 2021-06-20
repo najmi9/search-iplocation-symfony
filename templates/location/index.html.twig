@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello LocationController!{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+{% endblock %}
+
+{% block body %}
+    <div class="mt-4">
+        <h3>IP Adress: {{ ip }}</h3>
+        <div class="card">
+            <div class="card-header">
+                <strong>Location: </strong>
+            </div>
+            <div class="card-body">
+                <table class="table">
+                    <thead>
+                        <th>Service</th>
+                        <th>Latitude</th>
+                        <th>Longitude</th>
+                        <th>Country</th>
+                        <th>Region</th>
+                        <th>City</th>
+                        <th>Zip</th>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th>IP2Location</th>
+                            <td>{{ ip2Location.latitude }}</td>
+                            <td>{{ ip2Location.longitude }}</td>
+                            <td>{{ ip2Location.countryName }}</td>
+                            <td>{{ ip2Location.regionName }}</td>
+                            <td>{{ ip2Location.cityName }}</td>
+                            <td>{{ ip2Location.zipCode }}</td>
+                        </tr>
+
+                        <tr>
+                            <th>IpInfo.io</th>
+                            <td> {{ ipinfoLocation.latitude }} </td>
+                            <td> {{ ipinfoLocation.longitude }} </td>
+                            <td> {{ ipinfoLocation.country_name }} </td>
+                            <td> {{ ipinfoLocation.region }} </td>
+                            <td> {{ ipinfoLocation.city }} </td>
+                            <td> ----- </td>
+                        </tr>
+
+                        <tr>
+                            <th>ipgeolocation.io</th>
+                            <td> {{ ipLocation.latitude }} </td>
+                            <td> {{ ipLocation.longitude }} </td>
+                            <td> {{ ipLocation.country_name }} </td>
+                            <td> {{ ipLocation.state_prov }} </td>
+                            <td> {{ ipLocation.city }} </td>
+                            <td> {{ ipLocation.zipcode }} </td>
+                        </tr>
+
+                        <tr>
+                            <th>JS API</th>
+                            <td id="lat"></td>
+                            <td id="long"></td>
+                            <td>---------</td>
+                            <td>---------</td>
+                            <td>---------</td>
+                            <td>---------</td>
+                        <tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        const success = position => {
+            const latitude  = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            document.querySelector('#lat').innerHTML=latitude.toFixed(4)
+            document.querySelector('#long').innerHTML=longitude.toFixed(4)
+        }
+
+        navigator.geolocation.getCurrentPosition(success, (error) => console.log(error));
+    </script>
+{% endblock %}

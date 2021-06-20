@@ -12,6 +12,14 @@ services:
           - search-data:/data
         ports: 
             - 8108:8108
+    database:
+        image: 'mysql:latest'
+        container_name: database-container
+        environment:
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_DATABASE: typesense
+        ports:
+            - '3306'
 volumes: 
     search-data:
         driver: local

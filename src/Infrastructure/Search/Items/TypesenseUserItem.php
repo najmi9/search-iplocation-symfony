@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Infrastructure\Search\Item;
+namespace App\Infrastructure\Search\Items;
 
 use App\Infrastructure\Search\SearchResultItemInterface;
 

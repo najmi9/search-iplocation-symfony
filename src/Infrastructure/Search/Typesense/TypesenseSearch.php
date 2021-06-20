@@ -2,8 +2,8 @@
 
 namespace App\Infrastructure\Search\Typesense;
 
-use App\Infrastructure\Search\Item\TypesenseProductItem;
-use App\Infrastructure\Search\Item\TypesenseUserItem;
+use App\Infrastructure\Search\Items\TypesenseProductItem;
+use App\Infrastructure\Search\Items\TypesenseUserItem;
 use App\Infrastructure\Search\SearchInterface;
 use App\Infrastructure\Search\SearchResult;
 
