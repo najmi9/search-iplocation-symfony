@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace App\Command;
+namespace App\Infrastructure\Search\Elasticsearch\Command;
 
 use App\Infrastructure\Search\IndexerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -11,10 +11,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-class CleanCollectionCommand extends Command
+class CleanIndexCommand extends Command
 {
-    protected static $defaultName = 'clean:collection';
-    protected static $defaultDescription = 'Remove collection from typesense';
+    protected static $defaultName = 'app:elasticsearch:clean:index';
+    protected static $defaultDescription = 'Remove collection from elasticsearch';
     private IndexerInterface $indexer;
 
     public function __construct(IndexerInterface $indexer)
@@ -25,7 +25,7 @@ class CleanCollectionCommand extends Command
 
     protected function configure(): void
     {
-        $this->addArgument('name', InputArgument::REQUIRED, 'Collection Name');
+        $this->addArgument('name', InputArgument::REQUIRED, 'Index Name');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -35,7 +35,7 @@ class CleanCollectionCommand extends Command
 
         $this->indexer->clean($name);
 
-        $io->success("Colection {$name} cleaned.");
+        $io->success("Index {$name} cleaned.");
 
         return Command::SUCCESS;
     }

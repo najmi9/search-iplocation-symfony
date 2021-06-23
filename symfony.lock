@@ -100,6 +100,15 @@
     "egulias/email-validator": {
         "version": "3.1.1"
     },
+    "elasticsearch/elasticsearch": {
+        "version": "v7.13.1"
+    },
+    "ezimuel/guzzlestreams": {
+        "version": "3.0.1"
+    },
+    "ezimuel/ringphp": {
+        "version": "1.1.2"
+    },
     "fakerphp/faker": {
         "version": "v1.14.1"
     },
@@ -120,6 +129,9 @@
     },
     "ipinfo/ipinfo": {
         "version": "v2.2.0"
+    },
+    "jolicode/elastically": {
+        "version": "v1.2.0"
     },
     "knplabs/knp-components": {
         "version": "v3.0.2"
@@ -147,6 +159,9 @@
     },
     "nikic/php-parser": {
         "version": "v4.10.5"
+    },
+    "nyholm/dsn": {
+        "version": "2.0.0"
     },
     "phar-io/manifest": {
         "version": "2.0.1"
@@ -222,6 +237,12 @@
     "ralouphie/getallheaders": {
         "version": "3.0.3"
     },
+    "react/promise": {
+        "version": "v2.8.0"
+    },
+    "ruflin/elastica": {
+        "version": "7.1.1"
+    },
     "sabre/cache": {
         "version": "1.0.3"
     },
@@ -285,6 +306,9 @@
             "config/packages/sensio_framework_extra.yaml"
         ]
     },
+    "symfony/amqp-messenger": {
+        "version": "v5.3.2"
+    },
     "symfony/asset": {
         "version": "v5.3.0"
     },
@@ -338,6 +362,9 @@
     },
     "symfony/doctrine-bridge": {
         "version": "v5.3.1"
+    },
+    "symfony/doctrine-messenger": {
+        "version": "v5.3.2"
     },
     "symfony/dom-crawler": {
         "version": "v5.3.0"
@@ -432,6 +459,18 @@
             "version": "1.0",
             "ref": "fadbfe33303a76e25cb63401050439aa9b1a9c7f"
         }
+    },
+    "symfony/messenger": {
+        "version": "4.3",
+        "recipe": {
+            "repo": "github.com/symfony/recipes",
+            "branch": "master",
+            "version": "4.3",
+            "ref": "e9a414b113ceadbf4e52abe37bf8f1b443f06ccb"
+        },
+        "files": [
+            "config/packages/messenger.yaml"
+        ]
     },
     "symfony/mime": {
         "version": "v5.3.0"
@@ -528,6 +567,9 @@
     },
     "symfony/proxy-manager-bridge": {
         "version": "v5.3.0"
+    },
+    "symfony/redis-messenger": {
+        "version": "v5.3.2"
     },
     "symfony/routing": {
         "version": "5.3",

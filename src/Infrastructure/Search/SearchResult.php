@@ -2,13 +2,15 @@
 
 namespace App\Infrastructure\Search;
 
+use App\Infrastructure\Search\Model\ModelInterface;
+
 class SearchResult
 {
     private array $items;
     private int $total;
 
     /**
-     * @param SearchResultItemInterface[] $results
+     * @param ModelInterface[] $results
      */
     public function __construct(array $results, int $total)
     {
@@ -17,7 +19,7 @@ class SearchResult
     }
 
     /**
-     * @return SearchResultItemInterface[]
+     * @return ModelInterface[]
      */
     public function getItems(): array
     {

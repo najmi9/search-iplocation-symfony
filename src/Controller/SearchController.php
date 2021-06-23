@@ -23,12 +23,27 @@ class SearchController extends AbstractController
 
         $limit = $request->query->getInt('limit', 6);
 
-        $options = [
-            'query_by' => 'name,shortDescription,category',
-            'highlight_full_fields' => 'name,shortDescription',
+        $options = [];
+
+        $options['highlight_full_fields'] = ['name', 'shortDescription'];
+
+        $options['range'] = [
+            'field' => 'price',
+            'min' => 10,
+            'max' => 50,
         ];
 
-        $result = $search->search('products', $q, $options, $limit, $page);
+        $options['search_in'] = [
+            'name',
+            'description'
+        ];
+
+        $options['close'] = [
+            'to' => 'store.location',
+            'origin' => $this->getUser()->getLocation(),
+        ];
+
+        $result = $search->search('product', $q, $options, $limit, $page);
 
         return $this->render('search/index.html.twig', [
             'items' => $result->getItems(),

@@ -1,0 +1,18 @@
+mapping:
+  category:
+    type: 'string'
+  createdAt: 
+    type: int32
+  id:
+    type: integer
+  image:
+    type: 'string'
+  description:
+    type: 'string'
+  price:
+    type: 'string'
+  store:
+    type: string[]
+  rating:
+    type: float
+

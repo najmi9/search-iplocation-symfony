@@ -2,8 +2,10 @@
 
 declare(strict_types=1);
 
-namespace App\Command;
+namespace App\Infrastructure\Search\Typesense\Command;
 
+use App\Infrastructure\Search\Events\EntityCreatedEvent;
+use App\Services\EntityToModelService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -14,16 +16,20 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 class IndexEntityCommand extends Command
 {
-    protected static $defaultName = 'index:entity';
+    protected static $defaultName = 'app:typesense:index:entity';
     protected static $defaultDescription = 'Index entity';
     private EntityManagerInterface $em;
     private EventDispatcherInterface $dispatcher;
+    private string $root_dir;
+    private EntityToModelService $entityToModel;
 
-    public function __construct(EntityManagerInterface $em, EventDispatcherInterface $dispatcher)
+    public function __construct(EntityManagerInterface $em, EventDispatcherInterface $dispatcher, EntityToModelService $entityToModel, string $root_dir)
     {
         parent::__construct();
         $this->em = $em;
         $this->dispatcher = $dispatcher;
+        $this->entityToModel = $entityToModel;
+        $this->root_dir = $root_dir;
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -40,11 +46,10 @@ class IndexEntityCommand extends Command
 
         $prefix = explode('\\', $name)[2];
 
-        $eventName = "\\App\Events\\{$prefix}CreatedEvent";
+        $indexName = strtolower($prefix);
 
         foreach ($this->em->getRepository($name)->findAll() as $row) {
-            $ref = new \ReflectionClass($eventName);
-            $event = $ref->newInstanceArgs([$row]);
+            $event = new EntityCreatedEvent($indexName, $this->root_dir, $this->entityToModel->product($row));
             $this->dispatcher->dispatch($event);
         }
 

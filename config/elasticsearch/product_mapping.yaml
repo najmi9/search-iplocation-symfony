@@ -1,0 +1,35 @@
+# Anything you want, no validation
+settings:
+    number_of_replicas: 0
+    number_of_shards: 1
+    refresh_interval: 60s
+mappings:
+    dynamic: false
+    properties:
+        id:
+          type: integer
+          index: false
+        image:
+          type: text
+          index: false
+        name:
+          type: text
+          boost: 2
+        description:
+          type: text
+        price:
+          type: float
+        createdAt:
+          type: date
+          #format: 'yyyy-MM-dd HH:mm:ss'
+        store:
+          type: object
+          properties:
+            name: 
+              type: text
+            location:
+              type: geo_point
+            id:
+              type: integer
+        rating:
+          type: double

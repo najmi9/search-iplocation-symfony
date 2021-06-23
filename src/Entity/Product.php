@@ -7,6 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity(repositoryClass=ProductRepository::class)
+ * @ORM\HasLifecycleCallbacks
  */
 class Product
 {
@@ -23,14 +24,19 @@ class Product
     private $name;
 
     /**
-     * @ORM\Column(type="array")
+     * @ORM\Column(type="text")
      */
-    private $images = [];
+    private $description;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="datetime_immutable")
      */
-    private $image;
+    private $createdAt;
+
+    /**
+     * @ORM\Column(type="datetime_immutable")
+     */
+    private $updatedAt;
 
     /**
      * @ORM\Column(type="float")
@@ -38,29 +44,15 @@ class Product
     private $price;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\ManyToOne(targetEntity=Store::class, inversedBy="products")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $currency;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $createdAt;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $updatedAt;
+    private $store;
 
     /**
      * @ORM\Column(type="text")
      */
-    private $description;
-
-    /**
-     * @ORM\Column(type="float")
-     */
-    private $availableQuantity;
+    private $longDescription;
 
     /**
      * @ORM\Column(type="float")
@@ -68,14 +60,34 @@ class Product
     private $originalPrice;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="integer")
      */
-    private $shortDesciption;
+    private $availableQuantity = 1;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="products")
+     * @ORM\Column(type="boolean")
      */
-    private $category;
+    private $isOnline = true;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Shipping::class, inversedBy="products")
+     */
+    private $shipping;
+
+    /**
+     * @ORM\Column(type="float")
+     */
+    private $rating = 0;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $image;
+
+    /**
+     * @ORM\Column(type="array")
+     */
+    private $images = [];
 
     public function getId(): ?int
     {
@@ -94,26 +106,45 @@ class Product
         return $this;
     }
 
-    public function getImages(): ?array
+    public function getDescription(): ?string
     {
-        return $this->images;
+        return $this->description;
     }
 
-    public function setImages(array $images): self
+    public function setDescription(string $description): self
     {
-        $this->images = $images;
+        $this->description = $description;
 
         return $this;
     }
 
-    public function getImage(): ?string
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->image;
+        return $this->createdAt;
     }
 
-    public function setImage(string $image): self
+    /**
+     * @ORM\PrePersist
+     */
+    public function setCreatedAt(): self
     {
-        $this->image = $image;
+        $this->createdAt = new \DateTimeImmutable();
+
+        return $this;
+    }
+
+    public function getUpdatedAt(): ?\DateTimeImmutable
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     */
+    public function setUpdatedAt(): self
+    {
+        $this->updatedAt = new \DateTimeImmutable();
 
         return $this;
     }
@@ -130,62 +161,26 @@ class Product
         return $this;
     }
 
-    public function getCurrency(): ?string
+    public function getStore(): ?Store
     {
-        return $this->currency;
+        return $this->store;
     }
 
-    public function setCurrency(string $currency): self
+    public function setStore(?Store $store): self
     {
-        $this->currency = $currency;
+        $this->store = $store;
 
         return $this;
     }
 
-    public function getCreatedAt(): ?\DateTimeInterface
+    public function getLongDescription(): ?string
     {
-        return $this->createdAt;
+        return $this->longDescription;
     }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): self
+    public function setLongDescription(string $longDescription): self
     {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
-
-    public function getUpdatedAt(): ?\DateTimeInterface
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdatedAt(\DateTimeInterface $updatedAt): self
-    {
-        $this->updatedAt = $updatedAt;
-
-        return $this;
-    }
-
-    public function getDescription(): ?string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(string $description): self
-    {
-        $this->description = $description;
-
-        return $this;
-    }
-
-    public function getAvailableQuantity(): ?float
-    {
-        return $this->availableQuantity;
-    }
-
-    public function setAvailableQuantity(float $availableQuantity): self
-    {
-        $this->availableQuantity = $availableQuantity;
+        $this->longDescription = $longDescription;
 
         return $this;
     }
@@ -202,26 +197,74 @@ class Product
         return $this;
     }
 
-    public function getShortDesciption(): ?string
+    public function getAvailableQuantity(): ?int
     {
-        return $this->shortDesciption;
+        return $this->availableQuantity;
     }
 
-    public function setShortDesciption(string $shortDesciption): self
+    public function setAvailableQuantity(int $availableQuantity): self
     {
-        $this->shortDesciption = $shortDesciption;
+        $this->availableQuantity = $availableQuantity;
 
         return $this;
     }
 
-    public function getCategory(): ?Category
+    public function getIsOnline(): ?bool
     {
-        return $this->category;
+        return $this->isOnline;
     }
 
-    public function setCategory(?Category $category): self
+    public function setIsOnline(bool $isOnline): self
     {
-        $this->category = $category;
+        $this->isOnline = $isOnline;
+
+        return $this;
+    }
+
+    public function getShipping(): ?Shipping
+    {
+        return $this->shipping;
+    }
+
+    public function setShipping(?Shipping $shipping): self
+    {
+        $this->shipping = $shipping;
+
+        return $this;
+    }
+
+    public function getRating(): ?float
+    {
+        return $this->rating;
+    }
+
+    public function setRating(float $rating): self
+    {
+        $this->rating = $rating;
+
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): self
+    {
+        $this->image = $image;
+
+        return $this;
+    }
+
+    public function getImages(): ?array
+    {
+        return $this->images;
+    }
+
+    public function setImages(array $images): self
+    {
+        $this->images = $images;
 
         return $this;
     }

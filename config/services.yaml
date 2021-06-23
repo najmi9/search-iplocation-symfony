@@ -26,6 +26,9 @@ services:
       arguments:
         $host: '%env(resolve:TYPESENSE_URL)%'
         $apiKey: '%env(TYPESENSE_KEY)%'
+    App\Infrastructure\Search\Typesense\Command\IndexEntityCommand:
+      arguments:
+        $root_dir: '%root_dir%'
 
     # App\Infrastructure\GeoLocation\LocationInterface:
     App\Infrastructure\GeoLocation\IpinfoLocation:
@@ -39,3 +42,9 @@ services:
     App\Infrastructure\GeoLocation\IpGeoLocation:
       arguments:
         $apiKey: '%env(IP_LOCATION_KEY)%'
+
+    App\Infrastructure\Search\IndexerInterface:
+      class: App\Infrastructure\Search\Elasticsearch\ElasticsearchIndexer
+
+    App\Infrastructure\Search\SearchInterface:
+      class: App\Infrastructure\Search\Elasticsearch\ElasticSearch

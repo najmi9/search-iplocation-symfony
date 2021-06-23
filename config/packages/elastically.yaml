@@ -1,0 +1,30 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    JoliCode\Elastically\Transport\HttpClientTransport: ~
+    JoliCode\Elastically\Messenger\IndexationRequestHandler: ~
+    JoliCode\Elastically\Client:
+        arguments:
+            $config:
+                host: '%env(ELASTICSEARCH_HOST)%'
+                port: '%env(ELASTICSEARCH_PORT)%'
+                transport: '@JoliCode\Elastically\Transport\HttpClientTransport'
+                elastically_mappings_directory: '%kernel.project_dir%/config/elasticsearch'
+                elastically_index_class_mapping:
+                    product: App\Infrastructure\Search\Model
+                elastically_serializer: '@serializer'
+                elastically_bulk_size: 100
+            $logger: '@logger'
+
+    JoliCode\Elastically\Messenger\DocumentExchangerInterface:
+        alias: App\Infrastructure\Search\Elasticsearch\DocumentExchanger
+
+framework:
+    messenger:
+        transports:
+            async: "%env(MESSENGER_TRANSPORT_DSN)%"
+
+        routing:
+            'JoliCode\Elastically\Messenger\IndexationRequest':  async

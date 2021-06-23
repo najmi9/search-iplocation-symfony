@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Form;
 
 use App\Entity\Product;
@@ -16,14 +18,11 @@ class ProductType extends AbstractType
             ->add('images')
             ->add('image')
             ->add('price')
-            ->add('currency')
-            ->add('createdAt')
-            ->add('updatedAt')
             ->add('description')
             ->add('availableQuantity')
             ->add('originalPrice')
-            ->add('shortDesciption')
-            ->add('category')
+            ->add('longDescription')
+            ->add('store')
         ;
     }
 
