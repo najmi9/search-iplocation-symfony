@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Search\Typesense;
 
+use App\Infrastructure\Search\Model\Store;
 use App\Infrastructure\Search\SearchInterface;
 use App\Infrastructure\Search\SearchResult;
 use Symfony\Component\Serializer\SerializerInterface;
@@ -63,6 +64,24 @@ class TypesenseSearch implements SearchInterface
 
         $type = "\\App\\Infrastructure\\Search\\Model\\{$model}";
 
-        return new SearchResult(array_map(fn (array $item) => $this->serializer->deserialize($item, $type, 'json'), $items), $found > 10 * $limit ? 10 * $limit : $found);
+        return new SearchResult(array_map(fn (array $item) => $this->model($item, $type), $items), $found > 10 * $limit ? 10 * $limit : $found);
+    }
+
+    public function model(array $item, string $type)
+    {
+        $model = $this->serializer->deserialize(json_encode($item['document']), $type, 'json');
+
+        if (!empty($item['document']['store'])) {
+            $store = new Store();
+            $store->setName($item['document']['store'][1]);
+            $store->setId($item['document']['store'][0]);
+            $location = explode(',', $item['document']['store'][2]);
+
+            $store->setLocation([(float) $location[0], (float) $location[1]]);
+
+            $model->setStore($store);
+        }
+
+        return $model;
     }
 }

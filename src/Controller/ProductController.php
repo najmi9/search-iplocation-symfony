@@ -12,12 +12,12 @@ use App\Infrastructure\Search\Events\EntityUpdatedEvent;
 use App\Infrastructure\Search\SearchConstants;
 use App\Infrastructure\Search\SearchInterface;
 use App\Services\EntityToModelService;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 /**
  * @Route("/product")
@@ -38,9 +38,26 @@ class ProductController extends AbstractController
      */
     public function index(Request $request, SearchInterface $search): Response
     {
-        $q = $request->query->get('q', '');
+        $user = $this->getUser();
 
-        $products = $search->search(SearchConstants::PRODUCTS_INDEX, $q, []);
+        $q = $request->query->get('q', '');
+        $min = $request->query->getInt('min');
+        $max = $request->query->getInt('max');
+
+        $products = $search->search(SearchConstants::PRODUCTS_INDEX, $q, [
+            'range' => [
+                'field' => 'price', 
+                'min' => $min, 
+                'max' => $max 
+            ],
+            'search_in' => ['name', 'description'],
+            'close' => [
+                'origin' => $user->getLocation(),// Morocco []
+                'to' => 'store.location',
+            ]
+        ]);
+
+        // filter by categories
 
         return $this->render('product/index.html.twig', [
             'products' => $products->getItems(),
@@ -61,7 +78,12 @@ class ProductController extends AbstractController
             $entityManager->persist($product);
             $entityManager->flush();
 
-            $this->dispatcher->dispatch(new EntityCreatedEvent(SearchConstants::PRODUCTS_INDEX, $this->getParameter('root_dir'), $this->entityToModel->product($product)));
+            $this->dispatcher->dispatch(new EntityCreatedEvent(
+                SearchConstants::PRODUCTS_INDEX, 
+                $this->getParameter('root_dir'), 
+                $this->entityToModel->product($product, true, true),
+                SearchConstants::TYPESENSE
+            ));
 
             return $this->redirectToRoute('product_index');
         }
@@ -85,22 +107,26 @@ class ProductController extends AbstractController
     /**
      * @Route("/{id}/edit", name="product_edit", methods={"GET","POST"})
      */
-    public function edit(Request $request, Product $product, NormalizerInterface $normalizer): Response
+    public function edit(Request $request, Product $product, EntityManagerInterface $em): Response
     {
-        $previous = $product;
+        $previous = clone $product;
 
         $form = $this->createForm(ProductType::class, $product);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
+            $em->persist($product);
+            $em->flush();
 
-    
-            $content = $this->entityToModel->product($product);
-            $previous = $this->entityToModel->product($previous);
+            $content = $this->entityToModel->product($product, true, true);
+            $previousContent = $this->entityToModel->product($previous, true, true);
 
-            if ($previous !== $content) {
-                $this->dispatcher->dispatch(new EntityUpdatedEvent(SearchConstants::PRODUCTS_INDEX, $this->getParameter('root_dir'), $content));
+            if ($previousContent !== $content) {
+                $this->dispatcher->dispatch(new EntityUpdatedEvent(
+                    SearchConstants::PRODUCTS_INDEX, 
+                    $this->getParameter('root_dir'), 
+                    $content,
+                SearchConstants::TYPESENSE));
             }
 
             return $this->redirectToRoute('product_index');
@@ -113,13 +139,13 @@ class ProductController extends AbstractController
     }
 
     /**
-     * @Route("/{id}", name="product_delete", methods={"POST"})
+     * @Route("/{id}/delete", name="product_delete", methods={"POST"})
      */
     public function delete(Request $request, Product $product): Response
     {
         if ($this->isCsrfTokenValid('delete'.$product->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
-            $this->dispatcher->dispatch(new EntityDeletedEvent(SearchConstants::PRODUCTS_INDEX, (string) $product->getId(), SearchConstants::ELASTICSEARCH));
+            $this->dispatcher->dispatch(new EntityDeletedEvent(SearchConstants::PRODUCTS_INDEX, (string) $product->getId(), SearchConstants::TYPESENSE));
             $entityManager->remove($product);
             $entityManager->flush();
         }

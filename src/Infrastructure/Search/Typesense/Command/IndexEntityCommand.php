@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Infrastructure\Search\Typesense\Command;
 
 use App\Infrastructure\Search\Events\EntityCreatedEvent;
+use App\Infrastructure\Search\SearchConstants;
 use App\Services\EntityToModelService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -49,7 +50,7 @@ class IndexEntityCommand extends Command
         $indexName = strtolower($prefix);
 
         foreach ($this->em->getRepository($name)->findAll() as $row) {
-            $event = new EntityCreatedEvent($indexName, $this->root_dir, $this->entityToModel->product($row));
+            $event = new EntityCreatedEvent($indexName, $this->root_dir, $this->entityToModel->{$indexName}($row, true, true), SearchConstants::TYPESENSE);
             $this->dispatcher->dispatch($event);
         }
 

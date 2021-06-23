@@ -44,7 +44,7 @@ services:
         $apiKey: '%env(IP_LOCATION_KEY)%'
 
     App\Infrastructure\Search\IndexerInterface:
-      class: App\Infrastructure\Search\Elasticsearch\ElasticsearchIndexer
+      class: App\Infrastructure\Search\Typesense\TypesenseIndexer
 
     App\Infrastructure\Search\SearchInterface:
-      class: App\Infrastructure\Search\Elasticsearch\ElasticSearch
+      class: App\Infrastructure\Search\Typesense\TypesenseSearch

@@ -7,17 +7,15 @@ namespace App\Infrastructure\Search\Elasticsearch;
 use App\Infrastructure\Search\SearchInterface;
 use App\Infrastructure\Search\SearchResult;
 use JoliCode\Elastically\Client;
-use Symfony\Component\Serializer\SerializerInterface;
+use JoliCode\Elastically\Result;
 
 class ElasticSearch implements SearchInterface
 {
     private Client $client;
-    private SerializerInterface $serializer;
 
-    public function __construct(Client $client, SerializerInterface $serializer)
+    public function __construct(Client $client)
     {
         $this->client = $client;
-        $this->serializer = $serializer;
     }
 
     public function search(string $collection, string $q = '', array $options = [], int $limit = 50, int $page = 1): SearchResult
@@ -59,10 +57,6 @@ class ElasticSearch implements SearchInterface
 
         $result = $this->client->getIndex($collection)->search($boolQuery);
 
-        $model = \ucfirst($collection);
-
-        $type = "\\App\\Infrastructure\\Search\\Model\\{$model}";
-
-        return new SearchResult(array_map(fn (array $item) => $this->serializer->deserialize($item, $type, 'json'), $result->getResults()), $result->count());
+        return new SearchResult(array_map(fn (Result $item) => $item->getModel(), $result->getResults()), $result->count());
     }
 }

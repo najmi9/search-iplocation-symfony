@@ -13,7 +13,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 class CleanCollectionCommand extends Command
 {
-    protected static $defaultName = 'clean:collection';
+    protected static $defaultName = 'app:typesense:clean:collection';
     protected static $defaultDescription = 'Remove collection from typesense';
     private IndexerInterface $indexer;
 

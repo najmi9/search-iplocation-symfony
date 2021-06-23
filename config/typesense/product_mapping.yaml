@@ -1,16 +1,16 @@
 mapping:
-  category:
-    type: 'string'
   createdAt: 
     type: int32
+  name:
+    type: string
   id:
-    type: integer
+    type: string
   image:
     type: 'string'
   description:
     type: 'string'
   price:
-    type: 'string'
+    type: float
   store:
     type: string[]
   rating:

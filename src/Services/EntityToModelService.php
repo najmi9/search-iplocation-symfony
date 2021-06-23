@@ -21,7 +21,7 @@ class EntityToModelService
     /**
      * @return array|ProductModel
      */
-    public function product(Product $product, bool $isNormalized = true)
+    public function product(Product $product, bool $isNormalized = true, bool $isForTypesense = false)
     {
         $model = new ProductModel();
         $model->setId((string) $product->getId())
@@ -29,24 +29,27 @@ class EntityToModelService
             ->setPrice($product->getPrice())
             ->setName($product->getName())
             ->setRating($product->getRating())
-            ->setCreatedAt($product->getCreatedAt())
+            ->setCreatedAt($isForTypesense ? $product->getCreatedAt()->getTimestamp(): $product->getCreatedAt())
             ->setDescription($product->getDescription())
         ;
 
-        $store = new StoreModel();
-        $store->setName($product->getStore()->getName())
-            ->setLocation($product->getStore()->getLocation())
-            ->setId((string) $product->getStore()->getId())
-        ;
+        if (!$isForTypesense) {
+            $store = new StoreModel();
+            $store->setName($product->getStore()->getName())
+                ->setLocation($product->getStore()->getLocation())
+                ->setId((string) $product->getStore()->getId())
+            ;
+        }
 
-        /**
-         *  typesense support only array of strings.
-         *      $store = [
-         *          (string) $product->getStore()->getId(),
-         *          $product->getStore()->getName(),
-         *          \implode(',', $product->getStore()->getLocation()),
-         *      ];
-        */
+        if ($isForTypesense) {
+            // typesense support only array of strings.
+            $store = [
+                (string) $product->getStore()->getId(),
+                $product->getStore()->getName(),
+                \implode(',', $product->getStore()->getLocation()),
+            ];
+        }
+
         $model->setStore($store);
 
         if ($isNormalized) {

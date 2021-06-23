@@ -45,7 +45,6 @@ class EntityCreatedEvent
     {
         $fields = [];
         $mapping = Yaml::parse(file_get_contents("{$this->root_dir}/config/typesense/{$this->indexName}_mapping.yaml"));
-
         foreach ($mapping['mapping'] as $key => $value) {
             $field = ['name' => $key, 'type' => $value['type']];
             if (!empty($value['facet'])) {

@@ -1,17 +1,18 @@
 version: '3.4'
 
 services: 
-    # typesense:
-    #     restart: unless-stopped
-    #     image: typesense/typesense:0.20.0
-    #     container_name: typesense-container
-    #     environment:
-    #        TYPESENSE_DATA_DIR: /data
-    #        TYPESENSE_API_KEY: typesensekey
-    #     volumes:
-    #       - search-data:/data
-    #     ports: 
-    #         - 8108:8108
+    typesense:
+        restart: unless-stopped
+        image: typesense/typesense:0.20.0
+        container_name: typesense-container
+        environment:
+           TYPESENSE_DATA_DIR: /data
+           TYPESENSE_API_KEY: typesensekey
+        volumes:
+          - search-data:/data
+        ports: 
+            - 8108:8108
+
     # mariadb-service:
     #     image: mariadb
     #     restart: always
@@ -24,27 +25,27 @@ services:
     #         MYSQL_ALLOW_EMPTY_PASSWORD: null
     #         MYSQL_DATABASE: typesense
 
-    es:
-        image: docker.elastic.co/elasticsearch/elasticsearch:7.13.2
-        container_name: es-container
-        environment:
-            - xpack.security.enabled=false
-            - discovery.type=single-node
-        ports: 
-            - 9200:9200
-            - 9300:9300
-        # volumes: 
-        #     - ./search-data:/usr/share/elasticsearch/data
+    # es:
+    #     image: docker.elastic.co/elasticsearch/elasticsearch:7.13.2
+    #     container_name: es-container
+    #     environment:
+    #         - xpack.security.enabled=false
+    #         - discovery.type=single-node
+    #     ports: 
+    #         - 9200:9200
+    #         - 9300:9300
+    #     # volumes: 
+    #     #     - ./search-data:/usr/share/elasticsearch/data
 
-    kibana:
-        container_name: kibana
-        image: docker.elastic.co/kibana/kibana:7.4.0
-        environment:
-            - ELASTICSEARCH_HOSTS=http://es:9200
-        ports:
-            - 5601:5601
-        depends_on:
-            - es
+    # kibana:
+    #     container_name: kibana
+    #     image: docker.elastic.co/kibana/kibana:7.4.0
+    #     environment:
+    #         - ELASTICSEARCH_HOSTS=http://es:9200
+    #     ports:
+    #         - 5601:5601
+    #     depends_on:
+    #         - es
 volumes: 
     search-data:
         driver: local

@@ -31,9 +31,11 @@ class IndexerSubscriber implements EventSubscriberInterface
 
     public function indexEntity(EntityCreatedEvent $event): void
     {
-        $indexName = $event->getIndexName();
+        $class = \ucfirst($event->getIndexName());
 
-        $fields = SearchConstants::TYPESENSE === $event->getType()  ?  $event->getFields() : [];
+        $indexName = SearchConstants::TYPESENSE === $event->getType()  ? $event->getIndexName() : "App\\Infrastructure\\Search\\Model\\{$class}";
+
+        $fields = SearchConstants::TYPESENSE === $event->getType() ?  $event->getFields() : [];
 
         $content = $event->getContent();
 
@@ -44,14 +46,20 @@ class IndexerSubscriber implements EventSubscriberInterface
 
     public function removeEntity(EntityDeletedEvent $event): void
     {
-        $this->indexer->remove($event->getIndexName(), $event->getEntityId());
+        $class = \ucfirst($event->getIndexName());
+
+        $indexName = SearchConstants::TYPESENSE === $event->getType()  ? $event->getIndexName() : "App\\Infrastructure\\Search\\Model\\{$class}";
+
+        $this->indexer->remove($indexName, $event->getEntityId());
     }
 
     public function updateEntity(EntityUpdatedEvent $event)
     {
-        $indexName = $event->getIndexName();
+        $class = \ucfirst($event->getIndexName());
 
-        $fields = SearchConstants::TYPESENSE === $event->getType()  ?  $event->getFields() : [];
+        $indexName = SearchConstants::TYPESENSE === $event->getType()  ? $event->getIndexName() : "App\\Infrastructure\\Search\\Model\\{$class}";
+
+        $fields = SearchConstants::TYPESENSE === $event->getType() ?  $event->getFields() : [];
 
         $conent = $event->getContent();
 
