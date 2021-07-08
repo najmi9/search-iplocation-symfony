@@ -20,7 +20,7 @@ jobs:
       - run: |
             sudo apt update
             sudo apt install -y libsqlite3-dev zlib1g-dev mariadb-client zlib1g-dev libpng-dev libgmp-dev
-            docker-php-ext-configure gmp
+            sudo docker-php-ext-configure gmp
             sudo docker-php-ext-install zip pdo_mysql gd bcmath gmp
             sudo docker-php-ext-enable zip pdo_mysql gd bcmath
             sudo composer self-update
